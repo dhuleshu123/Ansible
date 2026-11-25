@@ -40,6 +40,13 @@ A collection of hands-on Ansible playbooks covering core system administration t
 | `14_for_loop.yml` | Iterating over lists and items using `loop` / `with_items`. |
 | `roles_demo.yml` | Structuring and executing reusable Ansible roles. |
 
+### Production & Real-World Workflows
+| :--- | :--- |
+| `15_jinja2_templates.yml` | Generates dynamic host configurations via `.j2` templates and triggers service reloads with handlers. |
+| `16_error_handling_blocks.yml` | Implements `block`, `rescue`, and `always` sections for automated failure recovery and cleanup. |
+| `17_vault_secrets.yml` | Loads encrypted credentials safely from `ansible-vault` files while masking sensitive output with `no_log`. |
+| `18_rolling_patch_reboot.yml` | Performs zero-downtime batch patching using `serial: 1` and conditional system reboots. |
+
 ### Additional Resources
 * `Ansible.pdf` – Reference guide and notes on Ansible concepts and commands.
 * `playbooks-20261120T080040Z-1-001.zip` – Archived bundle of the playbook files.
@@ -79,6 +86,10 @@ A collection of hands-on Ansible playbooks covering core system administration t
    ```bash
    ansible-playbook -i inventory.ini 01_app_install.yml
    ```
+5. **Run Vault-Encrypted Playbooks:**
+   ```bash
+   ansible-playbook -i inventory.ini 17_vault_secrets.yml --ask-vault-pass
+   ```   
    *(Add `--check` to perform a dry run before applying changes, or `-K` if a sudo password is required.)*
 
 ---
