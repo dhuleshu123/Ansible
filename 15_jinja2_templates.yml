@@ -1,0 +1,27 @@
+---
+- name: Deploy Dynamic Web Page Using Jinja2 Template and Handlers
+  hosts: all
+  become: true
+  vars:
+    site_title: "Production Server Portal"
+
+  tasks:
+    - name: Ensure Apache/httpd is installed
+      ansible.builtin.package:
+        name: httpd
+        state: present
+
+    - name: Render dynamic index.html from Jinja2 template
+      ansible.builtin.template:
+        src: templates/index.html.j2
+        dest: /var/www/html/index.html
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Restart httpd service
+
+  handlers:
+    - name: Restart httpd service
+      ansible.builtin.service:
+        name: httpd
+        state: restarted
