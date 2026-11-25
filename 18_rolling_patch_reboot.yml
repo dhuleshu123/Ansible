@@ -1,0 +1,31 @@
+---
+- name: Rolling OS Patching and Controlled Reboot
+  hosts: all
+  become: true
+  serial: 1  # Updates 1 server at a time to prevent full outage
+
+  tasks:
+    - name: Check available disk space before patching
+      ansible.builtin.shell: df -h / | awk 'NR==2 {print $5}'
+      register: root_disk_usage
+      changed_when: false
+
+    - name: Display current root disk usage
+      ansible.builtin.debug:
+        msg: "Root disk usage on {{ inventory_hostname }} is {{ root_disk_usage.stdout }}"
+
+    - name: Update all packages to latest version (RHEL/CentOS/Rocky)
+      ansible.builtin.yum:
+        name: "*"
+        state: latest
+      when: ansible_os_family == "RedHat"
+      register: yum_update_result
+
+    - name: Reboot server if kernel or core packages were updated
+      ansible.builtin.reboot:
+        msg: "Rebooting {{ inventory_hostname }} after OS patching"
+        connect_timeout: 5
+        reboot_timeout: 300
+        pre_reboot_delay: 5
+        post_reboot_delay: 15
+      when: yum_update_result.changed
