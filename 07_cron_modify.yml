@@ -1,13 +1,31 @@
 ---
-- name: Modify Cron
+- name: Modify Cron Job and Environment Variables
   hosts: all
-
+  become: true
   tasks:
-  - name: Remove Cron Job
-    cron:
-      name: VARR
-      env: yes
-      user: paul
-      job: /tmp/script/test.sh
-      insertafter: PATH
-      state: absent
+    - name: Update schedule or temporarily disable cron job
+      ansible.builtin.cron:
+        name: "Run test script"
+        minute: "30"
+        hour: "20"
+        day: "15"
+        month: "*"
+        weekday: "*"
+        user: paul
+        job: "/tmp/script/test.sh"
+        disabled: true
+
+    - name: Add environment variable in crontab
+      ansible.builtin.cron:
+        name: VARR
+        env: true
+        user: paul
+        job: "test.sh"
+        insertafter: PATH
+
+    - name: "Remove environment variable or cron job (state: absent)"
+      ansible.builtin.cron:
+        name: VARR
+        env: true
+        user: paul
+        state: absent
