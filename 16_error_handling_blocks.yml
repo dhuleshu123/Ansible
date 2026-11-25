@@ -1,0 +1,33 @@
+---
+- name: Error Handling and Rollback with Block, Rescue, and Always
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Safely update application configuration
+      block:
+        - name: Backup existing config file if present
+          ansible.builtin.copy:
+            src: /etc/hosts
+            dest: /tmp/hosts.bak
+            remote_src: true
+
+        - name: Simulate a failing task (intentional error for demo)
+          ansible.builtin.command: /bin/false
+
+      rescue:
+        - name: Notify failure and restore backup config
+          ansible.builtin.debug:
+            msg: "Deployment failed on {{ inventory_hostname }}. Restoring backup..."
+
+        - name: Restore original file from backup
+          ansible.builtin.copy:
+            src: /tmp/hosts.bak
+            dest: /etc/hosts
+            remote_src: true
+
+      always:
+        - name: Clean up temporary backup file
+          ansible.builtin.file:
+            path: /tmp/hosts.bak
+            state: absent
