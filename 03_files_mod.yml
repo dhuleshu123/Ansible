@@ -1,17 +1,27 @@
 ---
-- name: File Module
+- name: File and Directory Operations
   hosts: all
-
+  become: true
   tasks:
-  - name: Creating a file
-    file:
-      path: /tmp/newfile.txt
-      state: absent
-      owner: paul
-      group: paul
-      mode: u=rwx,g=rw,o=r
+    - name: Creating a file
+      ansible.builtin.file:
+        path: /tmp/newfile.txt
+        state: touch
+        owner: paul
+        group: paul
+        mode: "u=rwx,g=rw,o=r"
 
-  - name: Creating a directory
-    file:
-      path: /tmp/myfolder
-      state: absent
+    - name: Creating a directory
+      ansible.builtin.file:
+        path: /tmp/myfolder
+        state: directory
+
+    - name: "Deleting a file (use state: absent)"
+      ansible.builtin.file:
+        path: /tmp/newfile.txt
+        state: absent
+
+    - name: Deleting a directory
+      ansible.builtin.file:
+        path: /tmp/myfolder
+        state: absent
