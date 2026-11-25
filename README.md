@@ -41,6 +41,8 @@ A collection of hands-on Ansible playbooks covering core system administration t
 | `roles_demo.yml` | Structuring and executing reusable Ansible roles. |
 
 ### Production & Real-World Workflows
+
+| File | Description |
 | :--- | :--- |
 | `15_jinja2_templates.yml` | Generates dynamic host configurations via `.j2` templates and triggers service reloads with handlers. |
 | `16_error_handling_blocks.yml` | Implements `block`, `rescue`, and `always` sections for automated failure recovery and cleanup. |
